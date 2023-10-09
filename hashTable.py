@@ -14,7 +14,7 @@ class HashEventTable:
       count += 1
     return ordSum % hashTableSize
 
-  def rehash(self, oldhash, size):
+  def rehash(self, oldhash: int, size: int):
     return (oldhash + 1) % size
   
   def put(self, eventKey: str, eventValue: Event):
@@ -58,7 +58,7 @@ class HashEventTable:
     
     return valor
 
-  def removeEvent(self, eventKey, eventName):
+  def removeEvent(self, eventKey: str, eventName: str):
     categoryEvents = self.getEventsByCategory(eventKey) # Pega a lista de eventos da categoria recebida
     categoryPosition = self._values.index(categoryEvents) # Pega a posição da lista de eventos na lista de valores de cada categoria
 
@@ -67,8 +67,9 @@ class HashEventTable:
         categoryEvents.remove(event) # Remove o evento da lista
     
     self._values[categoryPosition] = categoryEvents # Atualiza a lista de eventos da categoria recebida, tornando-a a lista com o evento removido
+    self._slots[categoryPosition] = None
 
-  def listCategories(self):
+  def getCategories(self):
     return [key for key in self._slots if key is not None]
 
   def __getitem__(self, eventKey: str):

@@ -1,29 +1,62 @@
-from hash import *
-from models.event import *
+from hashTable import *
+from utils import *
 
-def insert(value, table):
+def insertEvent(eventsTable: HashEventTable):
+  eventCategory = input("Digite a categoria do evento: ")
+  eventName = input("Digite o nome do evento: ")
+  eventDesc = input("Digite a descrição do evento: ")
 
-  key = hashText(value, len(table))
-  posIncreasing = 1
+  # eventsTable.put(eventCategory, {"name": eventName, "category": eventCategory, "description": eventDesc})
+  eventsTable[eventCategory] = {"name": eventName, "category": eventCategory, "description": eventDesc}
 
-  while table[key] != '':
-    # key += posIncreasing ** 2
-    key += 1
-    posIncreasing += 1
+  print('\nEvento inserido com sucesso!')
 
-    if key >= len(table):
-      key = 0
+def removeEvent(eventsTable: HashEventTable):
+  if not hasCategories(eventsTable):
+    return
   
-  table[key] = value
+  eventCategory = input("Digite a categoria do evento: ")
 
+  if not categoryExists(eventsTable, eventCategory):
+    return
 
-def insertEvent(event: Event, table):
-  key = hashText(event.category, len(table))
+  eventName = input("Digite o nome do evento: ")
 
-  table[key].append(Event)
+  eventsTable.removeEvent(eventCategory, eventName)
 
-def get(value, table):
-  key = hash(value)
+  print('\nEvento removido com sucesso!')
+
+def listCategories(eventsTable: HashEventTable):
+  if not hasCategories(eventsTable):
+    return
   
-  while table[key] != value:
-    key += 1
+  availableCategories = eventsTable.getCategories()
+  print('\nAs seguintes categorias estão disponíveis: \n')
+
+  for category in availableCategories:
+    if availableCategories.index(category) == len(availableCategories) - 1:
+      print(f'{category}', end='.')
+    else:
+      print(f'{category}', end=', ')
+
+  print('')
+
+def listEventsByCategory(eventsTable: HashEventTable):
+  if not hasCategories(eventsTable):
+    return
+
+  eventCategory = input("Digite a categoria de evento: ")
+
+  if not categoryExists(eventsTable, eventCategory):
+    return
+
+  categoryEvents = eventsTable.getEventsByCategory(eventCategory)
+
+  if (categoryEvents != None):
+    count = 1
+    print('')
+    for event in categoryEvents:
+      print(f'Evento {count} - Nome: {event["name"]}, Categoria: {event["category"]}, Descrição: {event["description"]}')
+      count += 1
+  else:
+    print('Não há eventos nesta categoria.')
