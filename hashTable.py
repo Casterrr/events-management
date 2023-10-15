@@ -1,10 +1,12 @@
 from models.event import *
+from utils import nextSize
 
 class HashEventTable:
   def __init__(self):
     self._size = 11 #
     self._slots = [None] * self._size
     self._values = [[] for _ in range(self._size)]
+    self._numberOfElements = 0
 
   def hashEventCategory(self, category: str, hashTableSize: int):
     ordSum = 0
@@ -17,12 +19,17 @@ class HashEventTable:
   def rehash(self, oldhash: int, size: int):
     return (oldhash + 1) % size
   
-  def put(self, eventKey: str, eventValue: Event):
+  def put(self, eventKey: str, eventValue: Event, shouldResize: bool = False):
+    FC = (self._numberOfElements / self._size) # Verifica o fator de carga
+    if ((FC >= 0.7) and (FC <= 0.8) and shouldResize): # Se eestiver entre 0.7 e 0.8, redimensiona
+      self.resize()
+
     hashKey = self.hashEventCategory(eventKey, len(self._slots))
 
     if self._slots[hashKey] == None: # Caso na lista de chaves não exista uma chave nesse hash
       self._slots[hashKey] = eventKey
       self._values[hashKey].append(eventValue) # Adiciona o valor na lista de valores na posição do hash da chave recebida
+      self._numberOfElements += 1
     else: # Caso já exista
       if self._slots[hashKey] == eventKey: # Caso a chave que já tem na lista de chaves seja igual a chave recebida
         self._values[hashKey].append(eventValue) # Adiciona o valor na lista de valores na posição do hash da chave recebida
@@ -35,11 +42,18 @@ class HashEventTable:
         if self._slots[proximo_slot] == None: # Se tiver achando um slot vazio
           self._slots[proximo_slot] = eventKey
           self._values[proximo_slot].append(eventValue) # Adiciona na lista de valores da chave
+          self._numberOfElements += 1
         else: # Se tiver achado um slot ocupado
           self._values[proximo_slot].append(eventValue) # Adiciona na lista de valores da chave
+          self._numberOfElements += 1
 
-  def getEventsByCategory(self, eventKey: str):
-    slot_inicial = self.hashEventCategory(eventKey, len(self._slots))
+    
+
+  def getEventsByCategory(self, eventKey: str, values = None, slots = None):
+    if values == None: values = self._values
+    if slots == None: slots = self._slots
+
+    slot_inicial = self.hashEventCategory(eventKey, len(slots))
 
     valor = None
     parar = False
@@ -49,7 +63,7 @@ class HashEventTable:
     while self._slots[posicao] != None and not encontrou and not parar: # Enquanto houver chave na lista de chaves na posição do hash da chave recebida e não tiver encontrado o valor da chave recebida
       if self._slots[posicao] == eventKey: # Se a chave encontrada for igual a chave recebida
         encontrou = True
-        valor = self._values[posicao] # Define o valor a ser retornado com o valor da lista de valores no hash/rehash da chave recebida
+        valor = values[posicao] # Define o valor a ser retornado com o valor da lista de valores no hash/rehash da chave recebida
       else: # Caso contrário, significa que a chave recebida deve estar em um rehash
         posicao = self.rehash(posicao, len(self._slots)) # Pega o rehash da chave recebida
 
@@ -72,8 +86,26 @@ class HashEventTable:
   def getCategories(self):
     return [key for key in self._slots if key is not None]
 
+  def resize(self):
+    # Salva os atributos atuais
+    currentSize = self._size
+    currentSlots = self._slots
+    currentValues = self._values
+
+    # Redefine o tamanho da tabela para o novo tamanho
+    self._size = nextSize(self._size)
+    self._slots = [None] * self._size
+    self._values = [[] for _ in range(self._size)]
+
+    # Percorre as chaves e valores da tabela atual e os adicionar na nova tabela
+    for index in range(currentSize):
+      if (currentSlots[index] != None):
+        tempEvent = self.getEventsByCategory(currentSlots[index], values = currentValues, slots = currentSlots)
+
+        self.put(currentSlots[index], tempEvent)
+
   def __getitem__(self, eventKey: str):
     return self.getEventsByCategory(eventKey)
   
   def __setitem__(self, eventKey: str, valor: Event):
-    self.put(eventKey, valor)
+    self.put(eventKey, valor, True)

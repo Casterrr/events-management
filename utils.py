@@ -1,4 +1,4 @@
-from hashTable import *
+# from hashTable import *
 
 def showOptions():
   print('\nO que deseja fazer?: \n')
@@ -8,7 +8,7 @@ def showOptions():
   print('4 - Listar eventos de uma categoria')
   print('5 - Sair\n')
 
-def hasCategories(eventsTable: HashEventTable):
+def hasCategories(eventsTable):
   availableCategories = eventsTable.getCategories()
 
   if len(availableCategories) == 0:
@@ -17,7 +17,7 @@ def hasCategories(eventsTable: HashEventTable):
   
   return True
 
-def categoryExists(eventsTable: HashEventTable, eventCategory):
+def categoryExists(eventsTable, eventCategory):
   availableCategories = eventsTable.getCategories()
   
   if eventCategory not in availableCategories:
@@ -25,3 +25,42 @@ def categoryExists(eventsTable: HashEventTable, eventCategory):
     return False
   
   return True
+
+def eventExists(eventsTable, eventCategory, eventName):
+  categoryEvents = eventsTable.getEventsByCategory(eventCategory)
+  hasEvent = False
+
+  for event in categoryEvents:
+    if (event["name"] == eventName):
+      hasEvent = True
+  
+  if (not hasEvent):
+    print("\nEste evento não existe.")
+
+  return hasEvent
+
+def isPrime(number):
+  if number < 2:
+    return False
+  for i in range(2, int(number/2)):
+    if number % i == 0:
+      return False
+  return True
+
+def nextSize(number):
+  doubledSize = 2 * number
+
+  if doubledSize < 2:
+    return 2
+  nearestPrime = None
+  distance = 0
+
+  while True:
+    if isPrime(doubledSize + distance):
+      nearestPrime = doubledSize + distance
+      break
+    if isPrime(doubledSize - distance):
+      nearestPrime = doubledSize - distance
+      break
+    distance += 1
+  return nearestPrime

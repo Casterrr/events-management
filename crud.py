@@ -22,6 +22,9 @@ def removeEvent(eventsTable: HashEventTable):
 
   eventName = input("Digite o nome do evento: ")
 
+  if not eventExists(eventsTable, eventCategory, eventName):
+    return
+
   eventsTable.removeEvent(eventCategory, eventName)
 
   print('\nEvento removido com sucesso!')
