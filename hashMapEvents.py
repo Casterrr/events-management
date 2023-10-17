@@ -26,25 +26,27 @@ class HashMapEvents:
     # Gera o hash com base na categoria
     hashKey = self.hashEventCategory(event["name"], self._size)
 
-    if self._slots[hashKey] == None: # Caso na lista de chaves não exista uma chave nesse hash
+    # Verificar se no espaço do hash está vazio
+    if self._slots[hashKey] == None: 
+      # Se estiver adiciona a categoria e o seu respectivo evento.
       self._slots[hashKey] = event["name"]
-      self._values[hashKey] = event # Adiciona o valor na lista de valores na posição do hash da chave recebida
+      self._values[hashKey] = event 
       self._numberOfElements += 1
     elif self._slots[hashKey] == event["name"]:
-        self._values[hashKey] = event # Adiciona o valor na lista de valores na posição do hash da chave recebida
-        self._numberOfElements += 1
+        self._values[hashKey] = event 
     else:
       proximo_slot = self.rehash(hashKey, self._size)
       # Enquanto houver chave no próximo slot e essa chave for diferente da chave recebida continua pegando o próximo slot
       while self._slots[proximo_slot] != None and self._slots[proximo_slot] != event["name"]:
         proximo_slot = self.rehash(proximo_slot, self._size)
       # Se tiver achando um slot vazio
-      if self._slots[proximo_slot] == None: 
+      if self._slots[proximo_slot] == None:
         self._slots[proximo_slot] = event["name"]
-        self._values[proximo_slot] = event # Adiciona o valor na lista de valores na posição do hash da chave recebida
+        self._values[proximo_slot] = event
         self._numberOfElements += 1
       else:
         self._values[proximo_slot] = event
+    print('size evens', self._size)
 
   def listEvents(self):
     events = []
@@ -81,9 +83,8 @@ class HashMapEvents:
 
     # Percorre as chaves e valores da tabela atual e os adicionar na nova tabela
     for index in range(currentSize):
-      if (currentSlots[index] != None):
-        tempEvent = self.getEventsByCategory(currentSlots[index], values = currentValues, slots = currentSlots)
-
-        self.put(currentSlots[index], tempEvent)
+      if currentSlots[index] != None and currentValues[index] != None:
+        event = currentValues[index]
+        self.put(event)
 
   

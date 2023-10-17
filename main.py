@@ -1,4 +1,3 @@
 from management import *
 
 startManagement()
-

@@ -20,3 +20,5 @@ def startManagement():
       listCategories(eventsTable)
     elif (choice == 4):
       listEventsByCategory(eventsTable)
+    else: 
+      print("Selecione uma opção válida!")
