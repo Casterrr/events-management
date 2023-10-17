@@ -1,10 +1,14 @@
 def showOptions():
-  print('\nO que deseja fazer?: \n')
-  print('1 - Inserir um evento')
-  print('2 - Remover um evento')
-  print('3 - Listar categorias disponíveis')
-  print('4 - Listar eventos de uma categoria')
-  print('5 - Sair\n')
+    print('\nO que deseja fazer?: \n')
+    options = [
+        '1 - Inserir um evento',
+        '2 - Remover um evento',
+        '3 - Listar categorias disponíveis',
+        '4 - Listar eventos de uma categoria',
+        '5 - Sair'
+    ]
+    print('\n'.join(options))
+    print('')
 
 def hasCategories(eventsTable):
   availableCategories = eventsTable.getCategories()

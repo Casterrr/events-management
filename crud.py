@@ -32,17 +32,11 @@ def removeEvent(eventsTable: HashMap):
 def listCategories(eventsTable: HashMap):
   if not hasCategories(eventsTable):
     return
-  
+
   availableCategories = eventsTable.getCategories()
+
   print('\nAs seguintes categorias estão disponíveis: \n')
-
-  for category in availableCategories:
-    if availableCategories.index(category) == len(availableCategories) - 1:
-      print(f'{category}', end='.')
-    else:
-      print(f'{category}', end=', ')
-
-  print('')
+  print(', '.join(availableCategories) + '.')
 
 def listEventsByCategory(eventsTable: HashMap):
   if not hasCategories(eventsTable):
@@ -57,5 +51,5 @@ def listEventsByCategory(eventsTable: HashMap):
 
   if not events:
     return print('Categoria não possui eventos')
-
-  return printEvents(events)
+  else:
+    return printEvents(events)
