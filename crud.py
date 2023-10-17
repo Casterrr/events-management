@@ -1,22 +1,18 @@
-from hashTable import *
+from hashMap import *
 from utils import *
 
-def insertEvent(eventsTable: HashEventTable):
-  category = input("Digite a categoria do evento: ")
+def insertEvent(eventsTable: HashMap):
+  category = input("Digite o nome da categoria do evento: ")
   name = input("Digite o nome do evento: ")
   description = input("Digite a descrição do evento: ")
 
   event = {"category": category, "name":name, "description":description}
 
-  # print(event)
   eventsTable.put(event)
-
-  # eventsTable.put(eventCategory, {"name": eventName, "category": eventCategory, "description": eventDesc})
-  # eventsTable[category] = event
 
   print('\nEvento inserido com sucesso!')
 
-def removeEvent(eventsTable: HashEventTable):
+def removeEvent(eventsTable: HashMap):
   if not hasCategories(eventsTable):
     return
   
@@ -27,14 +23,13 @@ def removeEvent(eventsTable: HashEventTable):
 
   eventName = input("Digite o nome do evento: ")
 
-  # if not eventExists(eventsTable, eventCategory, eventName):
-  #   return
+  if not eventExists(eventsTable, eventCategory, eventName):
+    return
 
   eventsTable.removeEvent(eventCategory, eventName)
 
-  print('\nEvento removido com sucesso!')
 
-def listCategories(eventsTable: HashEventTable):
+def listCategories(eventsTable: HashMap):
   if not hasCategories(eventsTable):
     return
   
@@ -49,7 +44,7 @@ def listCategories(eventsTable: HashEventTable):
 
   print('')
 
-def listEventsByCategory(eventsTable: HashEventTable):
+def listEventsByCategory(eventsTable: HashMap):
   if not hasCategories(eventsTable):
     return
 
@@ -58,7 +53,9 @@ def listEventsByCategory(eventsTable: HashEventTable):
   if not categoryExists(eventsTable, eventCategory):
     return
 
-  eventsTable.getEventsByCategory(eventCategory)
+  events = eventsTable.getEventsByCategory(eventCategory)
+
+  return printEvents(events)
 
 
 

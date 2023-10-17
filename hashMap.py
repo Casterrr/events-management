@@ -1,33 +1,28 @@
 from models.event import *
-from utils import nextSize
-from hashEventsTable import HashEventsTable
+from utils import nextSize, generateHash, printEvents
+from hashMapEvents import HashMapEvents
 
-class HashEventTable:
+class HashMap:
   def __init__(self):
-    self._size: int = 11 #
+    self._size: int = 11
     self._slots:list = [None] * self._size
-    # TODO: check type
     self._values = [[] for _ in range(self._size)]
     self._numberOfElements: int = 0
 
   def hashEventCategory(self, category: str, hashTableSize: int):
-    ordSum = 0
-    count = 0
-    for character in category:
-      ordSum += (ord(character) * count)
-      count += 1
-    return ordSum % hashTableSize
+    return generateHash(category, hashTableSize)
 
   def rehash(self, oldhash: int, size: int):
     return (oldhash + 1) % size
 
-  def put(self, event: Event, shouldResize: bool = False):
+  def put(self, event: Event):
     FC = (self._numberOfElements / self._size) # Verifica o fator de carga
-    if ((FC >= 0.7) and (FC <= 0.8) and shouldResize): # Se eestiver entre 0.7 e 0.8, redimensiona
+    print('FC',FC)
+    if (FC >= 0.7) and (FC <= 0.8): # Se eestiver entre 0.7 e 0.8, redimensiona
+      print('redimensiona')
       self.resize()
 
     hashKey = self.hashEventCategory(event["category"], len(self._slots))
-
 
 
     if self._slots[hashKey] == None: # Caso na lista de chaves não exista uma chave nesse hash
@@ -35,7 +30,7 @@ class HashEventTable:
       self._slots[hashKey] = event["category"]
 
       # cria instancia de eventos
-      events = HashEventsTable()
+      events = HashMapEvents()
       # adiciona o evento
       events.put(event)
 
@@ -57,20 +52,20 @@ class HashEventTable:
           # self._values[proximo_slot].append(eventValue) # Adiciona na lista de valores da chave
           self._numberOfElements += 1
         else: # Se tiver achado um slot ocupado
+          self._slots[proximo_slot] = event["category"]
           # self._values[proximo_slot].append(eventValue) # Adiciona na lista de valores da chave
           self._numberOfElements += 1
-
-    
+    print("qtd", self._numberOfElements)
+    print("slots", len(self._slots))
 
   def getEventsByCategory(self, eventKey: str):
     hash = self.hashEventCategory(eventKey, self._size)
 
     if self._slots[hash] != None and self._values[hash] != None:
-
-      events: HashEventsTable = self._values[hash]
-    
-      
+      events: HashMapEvents = self._values[hash]
       return events.listEvents()
+    else:
+      return []
 
 
     # valor = None
@@ -91,13 +86,13 @@ class HashEventTable:
     # return valor
 
   def removeEvent(self, category, name):
-
+    
      hashKey = self.hashEventCategory(category, len(self._slots))
 
 
      if self._slots[hashKey] != None and self._values[hashKey] != None:
-       events:HashEventsTable = self._values[hashKey]
-       events.removeEvent(name)      
+       events:HashMapEvents = self._values[hashKey]
+       events.removeEvent(name)
 
 
 
@@ -124,13 +119,23 @@ class HashEventTable:
     self._size = nextSize(self._size)
     self._slots = [None] * self._size
     self._values = [[] for _ in range(self._size)]
+    self._numberOfElements = 0
 
     # Percorre as chaves e valores da tabela atual e os adicionar na nova tabela
     for index in range(currentSize):
-      if (currentSlots[index] != None):
-        tempEvent = self.getEventsByCategory(currentSlots[index], values = currentValues, slots = currentSlots)
+      
+      if currentSlots[index] != None and currentValues[index] != None:
+        tempEvents: HashMapEvents = currentValues[index]
 
-        self.put(currentSlots[index], tempEvent)
+        for i in range(tempEvents._size):
+         
+          if tempEvents._slots[i] != None and tempEvents._values[i] != None:
+
+            # print(tempEvents._values[i])
+            tempEvent = tempEvents._values[i]
+            print(tempEvent)
+            self.put(tempEvent)
+
 
   def __getitem__(self, eventKey: str):
     return self.getEventsByCategory(eventKey)
