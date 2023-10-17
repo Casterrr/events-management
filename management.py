@@ -1,8 +1,8 @@
-from hashTable import *
+from hashMap import *
 from crud import *
 
 def startManagement():
-  eventsTable = HashEventTable()
+  eventsTable = HashMap()
 
   while True:
     showOptions()
@@ -10,6 +10,7 @@ def startManagement():
     choice = int(input("Digite a opção desejada: "))
 
     if(choice == 5):
+      print('Programa finalizado com sucesso!')
       break
     elif(choice == 1):
       insertEvent(eventsTable)
@@ -19,3 +20,5 @@ def startManagement():
       listCategories(eventsTable)
     elif (choice == 4):
       listEventsByCategory(eventsTable)
+    else: 
+      print("Selecione uma opção válida!")
