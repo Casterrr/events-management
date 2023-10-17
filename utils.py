@@ -1,4 +1,6 @@
 # from hashTable import *
+# from hashEventsTable import HashEventsTable
+
 
 def showOptions():
   print('\nO que deseja fazer?: \n')
@@ -26,10 +28,10 @@ def categoryExists(eventsTable, eventCategory):
   
   return True
 
-def eventExists(eventsTable, eventCategory, eventName):
+def eventExists(eventsTable, eventCategory: str, eventName:str):
   categoryEvents = eventsTable.getEventsByCategory(eventCategory)
   hasEvent = False
-
+  
   for event in categoryEvents:
     if (event["name"] == eventName):
       hasEvent = True

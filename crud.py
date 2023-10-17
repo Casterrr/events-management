@@ -2,12 +2,17 @@ from hashTable import *
 from utils import *
 
 def insertEvent(eventsTable: HashEventTable):
-  eventCategory = input("Digite a categoria do evento: ")
-  eventName = input("Digite o nome do evento: ")
-  eventDesc = input("Digite a descrição do evento: ")
+  category = input("Digite a categoria do evento: ")
+  name = input("Digite o nome do evento: ")
+  description = input("Digite a descrição do evento: ")
+
+  event = {"category": category, "name":name, "description":description}
+
+  # print(event)
+  eventsTable.put(event)
 
   # eventsTable.put(eventCategory, {"name": eventName, "category": eventCategory, "description": eventDesc})
-  eventsTable[eventCategory] = {"name": eventName, "category": eventCategory, "description": eventDesc}
+  # eventsTable[category] = event
 
   print('\nEvento inserido com sucesso!')
 
@@ -22,8 +27,8 @@ def removeEvent(eventsTable: HashEventTable):
 
   eventName = input("Digite o nome do evento: ")
 
-  if not eventExists(eventsTable, eventCategory, eventName):
-    return
+  # if not eventExists(eventsTable, eventCategory, eventName):
+  #   return
 
   eventsTable.removeEvent(eventCategory, eventName)
 
@@ -53,13 +58,15 @@ def listEventsByCategory(eventsTable: HashEventTable):
   if not categoryExists(eventsTable, eventCategory):
     return
 
-  categoryEvents = eventsTable.getEventsByCategory(eventCategory)
+  eventsTable.getEventsByCategory(eventCategory)
 
-  if (categoryEvents != None):
-    count = 1
-    print('')
-    for event in categoryEvents:
-      print(f'Evento {count} - Nome: {event["name"]}, Categoria: {event["category"]}, Descrição: {event["description"]}')
-      count += 1
-  else:
-    print('Não há eventos nesta categoria.')
+
+
+  # if (categoryEvents != None):
+  #   count = 1
+  #   print('')
+  #   for event in categoryEvents:
+  #     print(f'Evento {count} - Nome: {event["name"]}, Categoria: {event["category"]}, Descrição: {event["description"]}')
+  #     count += 1
+  # else:
+  #   print('Não há eventos nesta categoria.')
