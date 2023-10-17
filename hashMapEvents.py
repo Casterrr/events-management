@@ -46,7 +46,6 @@ class HashMapEvents:
         self._numberOfElements += 1
       else:
         self._values[proximo_slot] = event
-    print('size evens', self._size)
 
   def listEvents(self):
     events = []
