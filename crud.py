@@ -23,7 +23,7 @@ def removeEvent(eventsTable: HashMap):
 
   eventName = input("Digite o nome do evento: ")
 
-  if not eventExists(eventsTable, eventCategory, eventName):
+  if not hasEvent(eventsTable, eventCategory, eventName):
     return
 
   eventsTable.removeEvent(eventCategory, eventName)
@@ -55,15 +55,7 @@ def listEventsByCategory(eventsTable: HashMap):
 
   events = eventsTable.getEventsByCategory(eventCategory)
 
+  if not events:
+    return print('Categoria não possui eventos')
+
   return printEvents(events)
-
-
-
-  # if (categoryEvents != None):
-  #   count = 1
-  #   print('')
-  #   for event in categoryEvents:
-  #     print(f'Evento {count} - Nome: {event["name"]}, Categoria: {event["category"]}, Descrição: {event["description"]}')
-  #     count += 1
-  # else:
-  #   print('Não há eventos nesta categoria.')

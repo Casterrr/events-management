@@ -24,9 +24,8 @@ def categoryExists(eventsTable, eventCategory):
 
   return True
 
-def eventExists(eventsTable, eventCategory: str, eventName:str):
+def hasEvent(eventsTable, eventCategory: str, eventName:str):
   events = eventsTable.getEventsByCategory(eventCategory)
-  print("eventos", events)
   hasEvent = False
 
   for event in events:
@@ -35,7 +34,6 @@ def eventExists(eventsTable, eventCategory: str, eventName:str):
 
   if (not hasEvent):
     print("\nEste evento não existe.")
-
   return hasEvent
 
 def printEvents(events):

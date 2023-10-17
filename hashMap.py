@@ -6,105 +6,76 @@ class HashMap:
   def __init__(self):
     self._size: int = 11
     self._slots:list = [None] * self._size
-    self._values = [[] for _ in range(self._size)]
+    self._values: list[HashMapEvents] = [[] for _ in range(self._size)]
     self._numberOfElements: int = 0
 
+  #Gera o hash da categoria
   def hashEventCategory(self, category: str, hashTableSize: int):
     return generateHash(category, hashTableSize)
-
+  #Retorna o fator de carga do HashMap
+  def getLoadFactor(self):
+    return self._numberOfElements / self._size
+  # Gera um novo hash apartir do hash gerado anteriormente
   def rehash(self, oldhash: int, size: int):
     return (oldhash + 1) % size
-
+  #Adiciona os eventos de acordo com suas respectivas categorias
   def put(self, event: Event):
-    FC = (self._numberOfElements / self._size) # Verifica o fator de carga
-    print('FC',FC)
-    if (FC >= 0.7) and (FC <= 0.8): # Se eestiver entre 0.7 e 0.8, redimensiona
-      print('redimensiona')
+    loadFactor = self.getLoadFactor()
+    #Verifica o fator de carga se está entre 0.7 e 0.8 e redimensiona a tabela para evitar de ter colisões.
+    if (loadFactor >= 0.7) and (loadFactor <= 0.8): 
       self.resize()
-
-    hashKey = self.hashEventCategory(event["category"], len(self._slots))
-
-
-    if self._slots[hashKey] == None: # Caso na lista de chaves não exista uma chave nesse hash
-      # armazena a categoria do evento
+    # Gera o hash com base na categoria
+    hashKey = self.hashEventCategory(event["category"], self._size)
+    # Verificar se no espaço do hash está vazio
+    if self._slots[hashKey] == None:
+      #Se estiver adiciona a categoria e o seu respectivo evento.
+      # Armazena a categoria do evento no espaço do hash
       self._slots[hashKey] = event["category"]
-
-      # cria instancia de eventos
+      # cria instancia para os eventos
       events = HashMapEvents()
-      # adiciona o evento
+      # Adiciona o evento
       events.put(event)
-
       self._values[hashKey] = events
       self._numberOfElements += 1
-    else: # Caso já exista
-      if self._slots[hashKey] == event["category"]: # Caso a chave que já tem na lista de chaves seja igual a chave recebida
-        events = self._values[hashKey]
+    
+    else: 
+      #Caso a chave da categoria ja esteja criada, apenas incrementara o evento nessa categoria.
+      if self._slots[hashKey] == event["category"]: 
+        events =  self._values[hashKey]
         events.put(event)
 
-      else: # Caso não seja igual
-        proximo_slot = self.rehash(hashKey, len(self._slots)) # Pega o próximo slot da lista de chaves a partir da função rehash
-        
-        while self._slots[proximo_slot] != None and self._slots[proximo_slot] != event["category"]: # Enquanto houver chave no próximo slot e essa chave for diferente da chave recebida
-          proximo_slot = self.rehash(proximo_slot, len(self._slots)) # Continua pegando o próximo slot
-        
-        if self._slots[proximo_slot] == None: # Se tiver achando um slot vazio
+      #Se caso tiver preenchido e for outra categoria, seria um caso de colisão. Então é necessario fazer um rehash
+      else:
+        # Pega o próximo slot da lista de chaves a partir da função rehash
+        proximo_slot = self.rehash(hashKey, self._size)
+        # Enquanto houver chave no próximo slot e essa chave for diferente da chave recebida continua pegando o próximo slot
+        while self._slots[proximo_slot] != None and self._slots[proximo_slot] != event["category"]:
+          proximo_slot = self.rehash(proximo_slot, self._size)
+        # Se tiver achando um slot vazio
+        if self._slots[proximo_slot] == None: 
           self._slots[proximo_slot] = event["category"]
-          # self._values[proximo_slot].append(eventValue) # Adiciona na lista de valores da chave
+          events = HashMapEvents()
+          events.put(event)
+
+          self._values[proximo_slot] = events
           self._numberOfElements += 1
-        else: # Se tiver achado um slot ocupado
-          self._slots[proximo_slot] = event["category"]
-          # self._values[proximo_slot].append(eventValue) # Adiciona na lista de valores da chave
-          self._numberOfElements += 1
-    print("qtd", self._numberOfElements)
-    print("slots", len(self._slots))
+        else:
+          events = self._values[proximo_slot] 
+          events.put(event)
 
   def getEventsByCategory(self, eventKey: str):
     hash = self.hashEventCategory(eventKey, self._size)
 
     if self._slots[hash] != None and self._values[hash] != None:
-      events: HashMapEvents = self._values[hash]
+      events = self._values[hash]
       return events.listEvents()
-    else:
-      return []
-
-
-    # valor = None
-    # parar = False
-    # encontrou = False
-    # posicao = slot_inicial
-
-    # while self._slots[posicao] != None and not encontrou and not parar: # Enquanto houver chave na lista de chaves na posição do hash da chave recebida e não tiver encontrado o valor da chave recebida
-    #   if self._slots[posicao] == eventKey: # Se a chave encontrada for igual a chave recebida
-    #     encontrou = True
-    #     valor = values[posicao] # Define o valor a ser retornado com o valor da lista de valores no hash/rehash da chave recebida
-    #   else: # Caso contrário, significa que a chave recebida deve estar em um rehash
-    #     posicao = self.rehash(posicao, len(self._slots)) # Pega o rehash da chave recebida
-
-    #     if posicao == slot_inicial: # Para evitar que fique num ciclo de rehash infinito
-    #       parar = True # Oberse que nesse caso, o valor não pôde ser encontrado, e o valor retornado será None.
-    
-    # return valor
 
   def removeEvent(self, category, name):
-    
      hashKey = self.hashEventCategory(category, len(self._slots))
 
-
      if self._slots[hashKey] != None and self._values[hashKey] != None:
-       events:HashMapEvents = self._values[hashKey]
+       events = self._values[hashKey]
        events.removeEvent(name)
-
-
-
-    # categoryEvents = self.getEventsByCategory(eventKey) # Pega a lista de eventos da categoria recebida
-    # categoryPosition = self._values.index(categoryEvents) # Pega a posição da lista de eventos na lista de valores de cada categoria
-
-    # for event in categoryEvents: # Para cada evento na lista de eventos
-    #   if event["name"] == eventName: # Se o nome do evento da lista for igual ao nome de evento recebido
-    #     categoryEvents.remove(event) # Remove o evento da lista
-    
-    # self._values[categoryPosition] = categoryEvents # Atualiza a lista de eventos da categoria recebida, tornando-a a lista com o evento removido
-    # self._slots[categoryPosition] = None
 
   def getCategories(self):
     return [key for key in self._slots if key is not None]
@@ -121,24 +92,13 @@ class HashMap:
     self._values = [[] for _ in range(self._size)]
     self._numberOfElements = 0
 
-    # Percorre as chaves e valores da tabela atual e os adicionar na nova tabela
+    # Percorre as chaves e seus respectivos valores para adicionar na lista com o tamanho atualizado
     for index in range(currentSize):
-      
       if currentSlots[index] != None and currentValues[index] != None:
-        tempEvents: HashMapEvents = currentValues[index]
+        tempEvents = currentValues[index]
 
         for i in range(tempEvents._size):
-         
           if tempEvents._slots[i] != None and tempEvents._values[i] != None:
-
-            # print(tempEvents._values[i])
             tempEvent = tempEvents._values[i]
-            print(tempEvent)
             self.put(tempEvent)
 
-
-  def __getitem__(self, eventKey: str):
-    return self.getEventsByCategory(eventKey)
-  
-  def __setitem__(self, event: Event):
-    self.put(event, True)
