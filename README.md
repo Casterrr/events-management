@@ -41,3 +41,11 @@ O sistema será implementado da seguinte forma:
 | <img src="https://avatars.githubusercontent.com/u/44622004?v=4" width="250px" height="250px"> | <img src="https://avatars.githubusercontent.com/u/41112779?v=4" width="250px" height="250px"> |
 | :---: | :---: |
 | [Lucas Matheus ](https://github.com/Casterrr) | [Filipe Zaidan](https://github.com/filipezaidan) |
+
+## Conteúdo consultado
+- Slides do material no classroom
+
+## Comentário sobre se conseguimos realizar ou não tudo o que foi proprosto e dificuldades encontradas 
+- Conseguimos realizar todas as funcionalidades requisitadas. No início, não havíamos implementado HashMap na listagem de eventos, apenas havíamos implementado HashMap na listagem de categorias. Então repensar o código foi um desafio, mas deu certo! A maior dificuldade foi a questão do fator de carga: Criar a função do número primo mais próximo do dobro do valor e realizar a inserção de cada categoria e eventos cadastrados na nova tabela de tamanho maior... Bugou bastante kkkk, mas foi!
+
+
